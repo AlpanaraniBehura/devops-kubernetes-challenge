@@ -25,20 +25,22 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
+        shell: powershell
         run: |
-          docker build `
-            -t ghcr.io/${{ github.repository }}/api:latest `
-            ./app
+          $IMAGE="ghcr.io/${{ github.repository }}".ToLowerInvariant() + "/api:latest"
+          docker build -t $IMAGE ./app
+          echo "IMAGE=$IMAGE" >> $env:GITHUB_ENV
 
       - name: Push Docker image
+        shell: powershell
         run: |
-          docker push `
-            ghcr.io/${{ github.repository }}/api:latest
+          docker push $env:IMAGE
 
       - name: Deploy to Kubernetes
+        shell: powershell
         run: |
           kubectl set image deployment/api `
-            api=ghcr.io/${{ github.repository }}/api:latest `
+            api=$env:IMAGE `
             -n devops
 
           kubectl rollout status deployment/api `
