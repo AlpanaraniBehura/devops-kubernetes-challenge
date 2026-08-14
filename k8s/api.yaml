@@ -18,9 +18,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: devops-api:local
-
-          imagePullPolicy: Never
+          image: image: ghcr.io/alpanaranibehura/devops-kubernetes-challenge/api:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8000
